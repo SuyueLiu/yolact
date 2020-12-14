@@ -132,6 +132,7 @@ data/cityscapes
 ssd.pytorch/
 
 # some datasets
+data/yolact_one_box/
 data/VOCdevkit/
 data/coco/images/
 data/coco/annotations/

@@ -98,7 +98,7 @@ class MultiBoxLoss(nn.Module):
             class_existence_t = loc_data.new(batch_size, num_classes-1)
 
         for idx in range(batch_size):
-            truths      = targets[idx][:, :-1].data
+            truths = targets[idx][:, :-1].data
             labels[idx] = targets[idx][:, -1].data.long()
 
             if cfg.use_class_existence_loss:
@@ -184,9 +184,11 @@ class MultiBoxLoss(nn.Module):
                 losses['C'] = self.ohem_conf_loss(conf_data, conf_t, pos, batch_size)
 
         # Mask IoU Loss
-        if cfg.use_maskiou and maskiou_targets is not None:
-            losses['I'] = self.mask_iou_loss(net, maskiou_targets)
-
+        if cfg.use_maskiou:
+            if maskiou_targets is not None:
+                losses['I'] = self.mask_iou_loss(net, maskiou_targets)
+            else:
+                losses['I'] = torch.tensor(0, device=loc_data.device, dtype=loc_data.dtype)
         # These losses also don't depend on anchors
         if cfg.use_class_existence_loss:
             losses['E'] = self.class_existence_loss(predictions['classes'], class_existence_t)
